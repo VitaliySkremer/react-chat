@@ -4,6 +4,7 @@ import {Context} from "./main";
 import {useAuthState} from "react-firebase-hooks/auth";
 import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
 import {Chat} from "./Components/Chat";
+import Typography from "@mui/material/Typography";
 
 function App() {
 
@@ -18,7 +19,7 @@ function App() {
         </div>
         :<>
           <NavBar/>
-          {user ? <Chat/> : <div>Авторизуйтесь</div>}
+          {user ? <Chat/> : <Typography style={{ position: 'fixed',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}} variant="h6">Авторизуйтесь</Typography>}
         </>
       }
     </div>

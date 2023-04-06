@@ -48,7 +48,7 @@ export const NavBar = () => {
           {user ? (
             <div>
               <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
-                <Typography className="nav__name" variant="span">
+                <Typography className="nav__name">
                   {user.displayName}
                 </Typography>
                 <IconButton
