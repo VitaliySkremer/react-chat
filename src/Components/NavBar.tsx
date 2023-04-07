@@ -4,19 +4,22 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import {useContext, useState} from "react";
-import {Context} from "../main";
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
 import {useAuthState} from "react-firebase-hooks/auth";
-import {useMediaQuery} from "@mui/material";
+import { Context } from "../LayoutContext/LayoutContext";
+import {nanoid} from "nanoid";
+import Snackbar from "@mui/material/Snackbar/Snackbar";
+import Alert from "@mui/material/Alert/Alert";
 
 export const NavBar = () => {
-  const {auth} = useContext(Context)
+  const {auth,newHash} = useContext(Context)
   const [user] = useAuthState(auth);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openAlert, setOpenAlert] = useState(false);
 
   const login = async () =>{
     const provider = new GoogleAuthProvider();
@@ -33,9 +36,26 @@ export const NavBar = () => {
     setAnchorEl(null);
   };
 
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  };
+
   const logout = () =>{
     auth.signOut();
     handleClose();
+  }
+
+  const createChat = () =>{
+    const newHashValue = nanoid();
+    newHash(newHashValue);
+    window.location.replace(`#${newHashValue}`)
+    navigator.clipboard.writeText(window.location.href).then(()=>console.log('удачно!'))
+    setOpenAlert(true);
+  }
+
+  const openGlobalChat = () =>{
+    window.location.replace(`/#`)
+    newHash(null);
   }
 
   return (
@@ -78,6 +98,8 @@ export const NavBar = () => {
                 onClose={handleClose}
               >
                 <MenuItem onClick={logout}>Выйти</MenuItem>
+                <MenuItem onClick={createChat}>Создать чат</MenuItem>
+                <MenuItem onClick={openGlobalChat}>Открыть общий чат</MenuItem>
               </Menu>
             </div>
           ):(
@@ -85,6 +107,14 @@ export const NavBar = () => {
           )}
         </Toolbar>
       </AppBar>
+
+      <Snackbar open={openAlert} autoHideDuration={4000} onClose={handleCloseAlert}>
+        <Alert onClose={handleCloseAlert} severity="success" sx={{ width: '100%' }}>
+          <Typography variant="h6">
+            Ссылка на чат скопирована, можешь править другу!
+          </Typography>
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

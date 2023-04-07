@@ -1,10 +1,10 @@
 import {NavBar} from "./Components/NavBar";
 import {useContext} from "react";
-import {Context} from "./main";
 import {useAuthState} from "react-firebase-hooks/auth";
 import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
 import {Chat} from "./Components/Chat";
 import Typography from "@mui/material/Typography";
+import { Context } from "./LayoutContext/LayoutContext";
 
 function App() {
 
@@ -12,7 +12,7 @@ function App() {
   const [user, loading, error] = useAuthState(auth);
 
   return (
-    <div>
+    <div className="app">
       {loading
         ?<div style={{ position: 'fixed',top:'50%',left:'50%',transform:'translate(-50%,-50%)' }}>
           <CircularProgress size={100}/>

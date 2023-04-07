@@ -1,5 +1,4 @@
 import {FormEvent, useContext, useEffect, useRef, useState} from "react";
-import {Context} from "../main";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {IconButton, InputBase} from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
@@ -7,12 +6,13 @@ import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
 import { collection, addDoc, query, orderBy, serverTimestamp  } from "firebase/firestore";
 import {useCollection} from "react-firebase-hooks/firestore";
 import {Message} from "./Message";
+import { Context } from "../LayoutContext/LayoutContext";
 
 export const Chat = () => {
-  const {auth,firestore} = useContext(Context)
+  const {auth,firestore, hash} = useContext(Context)
   const [user] = useAuthState(auth);
   const [messages, loading,error] = useCollection(
-    query(collection(firestore, 'messages'), orderBy('createdAt')),
+    query(collection(firestore, hash || 'messages'), orderBy('createdAt')),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
     }
@@ -28,7 +28,7 @@ export const Chat = () => {
     if(loadingMessage || !text) return;
     try {
       setLoadingMessage(true);
-      const test = await addDoc(collection(firestore,'messages'),{
+      const test = await addDoc(collection(firestore,hash || 'messages'),{
         uid:user?.uid,
         displayName: user?.displayName,
         photo: user?.photoURL,
