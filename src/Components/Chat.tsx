@@ -4,7 +4,7 @@ import {useAuthState} from "react-firebase-hooks/auth";
 import {IconButton, InputBase} from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
-import { collection, addDoc, query, orderBy } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, serverTimestamp  } from "firebase/firestore";
 import {useCollection} from "react-firebase-hooks/firestore";
 import {Message} from "./Message";
 
@@ -25,7 +25,7 @@ export const Chat = () => {
 
   const sendMessage = async (event: FormEvent) =>{
     event.preventDefault();
-    if(loadingMessage) return;
+    if(loadingMessage || !text) return;
     try {
       setLoadingMessage(true);
       const test = await addDoc(collection(firestore,'messages'),{
@@ -33,7 +33,7 @@ export const Chat = () => {
         displayName: user?.displayName,
         photo: user?.photoURL,
         text,
-        createdAt:new Date()
+        createdAt:serverTimestamp()
       })
     }
     catch (e){
@@ -73,7 +73,7 @@ export const Chat = () => {
           value={text}
           onChange={e=> setText(e.target.value)}
         />
-        <IconButton disabled={loadingMessage} type="button" color={'primary'} sx={{ p: '10px' }} aria-label="search">
+        <IconButton onClick={sendMessage} disabled={loadingMessage} type="button" color={'primary'} sx={{ p: '10px' }} aria-label="search">
           <SendIcon />
         </IconButton>
       </form>
